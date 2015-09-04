@@ -1,0 +1,97 @@
+{
+    "error": null,
+    "id": 0,
+    "principal": "admin@EXAMPLE.TEST",
+    "result": {
+        "count": 3,
+        "result": [
+            {
+                "dn": "uid=admin,cn=users,cn=accounts,dc=example,dc=test",
+                "gidnumber": [
+                    "135800000"
+                ],
+                "has_keytab": true,
+                "has_password": true,
+                "homedirectory": [
+                    "/home/admin"
+                ],
+                "loginshell": [
+                    "/bin/bash"
+                ],
+                "nsaccountlock": false,
+                "sn": [
+                    "Administrator"
+                ],
+                "uid": [
+                    "admin"
+                ],
+                "uidnumber": [
+                    "135800000"
+                ]
+            },
+            {
+                "dn": "uid=register-marcher,cn=users,cn=accounts,dc=example,dc=test",
+                "gidnumber": [
+                    "135800003"
+                ],
+                "givenname": [
+                    "register"
+                ],
+                "has_keytab": false,
+                "has_password": false,
+                "homedirectory": [
+                    "/home/register-marcher"
+                ],
+                "loginshell": [
+                    "/bin/sh"
+                ],
+                "mail": [
+                    "register-marcher@example.test"
+                ],
+                "nsaccountlock": false,
+                "sn": [
+                    "marcher"
+                ],
+                "uid": [
+                    "register-marcher"
+                ],
+                "uidnumber": [
+                    "135800003"
+                ]
+            },
+            {
+                "dn": "uid=smercado,cn=users,cn=accounts,dc=example,dc=test",
+                "gidnumber": [
+                    "135800001"
+                ],
+                "givenname": [
+                    "sang"
+                ],
+                "has_keytab": true,
+                "has_password": true,
+                "homedirectory": [
+                    "/home/smercado"
+                ],
+                "loginshell": [
+                    "/bin/sh"
+                ],
+                "mail": [
+                    "smercado@example.test"
+                ],
+                "nsaccountlock": false,
+                "sn": [
+                    "mercado"
+                ],
+                "uid": [
+                    "smercado"
+                ],
+                "uidnumber": [
+                    "135800001"
+                ]
+            }
+        ],
+        "summary": "3 users matched",
+        "truncated": false
+    },
+    "version": "4.1.0"
+}
