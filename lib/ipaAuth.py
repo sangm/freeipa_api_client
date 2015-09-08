@@ -1,14 +1,6 @@
 import urllib
 from Cookie import SimpleCookie
-
-
-class IPAResponse(object):
-    def __init__(self, status_code, headers, expiration=None, session=None, failure=None):
-        self.session = session
-        self.status_code = status_code
-        self.expiration = expiration
-        self.headers = headers
-        self.failure = failure
+from ipaResponse import IPAResponse
 
 
 class IPAAuth(object):
@@ -47,7 +39,11 @@ class IPAAuth(object):
         return urllib.urlencode(userData)
 
     def authenticate(self, username, password):
-        # TODO Check expiration time of existing session
+        """
+        :param username:
+        :param password:
+        :return: IPAResponse
+        """
         userData = {
             'user': username,
             'password': password
@@ -58,7 +54,6 @@ class IPAAuth(object):
                                       verify=False,
                                       headers=self.__getHeader__())
 
-        # TODO status code will be different if redirect
         if response.status_code == 200:
             cookie = SimpleCookie(response.headers['set-cookie'])
             return IPAResponse(

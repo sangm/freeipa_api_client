@@ -15,3 +15,5 @@
 + TODO Compare time stamps in ipaClient
 + TODO Store passwords in a secure manner
 
+## Resources
++ https://vda.li/en/posts/2015/05/28/talking-to-freeipa-api-with-sessions/

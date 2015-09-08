@@ -1,6 +1,6 @@
 import json
 import requests
-from lib.ipaAuth import IPAAuth
+from ipaAuth import IPAAuth
 
 
 class IPAClient(object):
@@ -15,10 +15,13 @@ class IPAClient(object):
         self.requests = requests
         self.baseUrl = baseUrl
         self.sourceUrl = sourceUrl
+
+        # this is done so that testing is easier
         if ipaAuth is None:
             self.ipaAuth = IPAAuth(requests=requests, baseUrl=baseUrl)
         else:
             self.ipaAuth = ipaAuth
+
         self.sessionExpiration = None
         self.sessionID = None
 
@@ -33,30 +36,40 @@ class IPAClient(object):
             'Cookie': 'ipa_session=%s' % sessionID
         }
 
-    def __getParams__(self, method, params):
+    def __getParams__(self, method, params, options=None):
+        if options is None:
+            options = {
+                'version': self.API_VERSION
+            }
+        else:
+            options['version'] = self.API_VERSION
+
         return {
             'method': method,
             'params': [
                 params,
-                {'version': self.API_VERSION}
+                options
             ]
         }
 
     def getLocalTime(self, timeZone):
         pass
 
-    def sendRequest(self, method, params):
-        if self.sessionID is None or not self.isSessionExpired(self.sessionExpiration):
+    def sendRequest(self, method, params, options=None):
+        if self.sessionID is None or not self.isSessionExpired(self.sessionExpiration, None):
             ipaResponse = self.ipaAuth.authenticate(self.USERNAME, self.PASSWORD)
             self.sessionID = ipaResponse.session
             self.sessionExpiration = ipaResponse.expiration
 
         url = self.__getUrl__()
         headers = self.__getHeader__(self.sessionID)
-        params = self.__getParams__(method, params)
+        params = self.__getParams__(method, params, options)
 
         response = requests.post(url, data=json.dumps(params), headers=headers, verify=False)
-        return response.json()
+        try:
+            return response.json()
+        except ValueError:
+            return response
 
     def isSessionExpired(self, sessionExpiration, localTime):
         # TODO Implement this, make sure both datetime objects are in the same timezone

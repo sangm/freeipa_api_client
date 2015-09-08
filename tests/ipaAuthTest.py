@@ -1,6 +1,6 @@
-from tests.MockResponse import MockResponse
+from tests import MockResponse
 from mock import MagicMock
-from lib.ipaAuth import IPAAuth, IPAResponse
+from lib import IPAAuth, IPAResponse
 import unittest
 import requests
 
@@ -58,6 +58,8 @@ class IPAAuthTest(unittest.TestCase):
         )
 
         requests.post = MagicMock(return_value=requestResponseObject)
+
+
         ipaClient = IPAAuth(requests=requests, baseUrl=self.baseUrl)
 
         result = ipaClient.authenticate(

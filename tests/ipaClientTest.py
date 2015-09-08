@@ -1,13 +1,13 @@
 from mock import MagicMock
-from lib.ipaAuth import IPAAuth, IPAResponse
-from lib.ipaClient import IPAClient
-from tests.MockResponse import MockResponse
+from lib import IPAAuth, IPAResponse, IPAClient
+from tests import MockResponse
 import unittest
 import requests
 import json
 import os
 
-class ipaClientTest(unittest.TestCase):
+
+class IPAClientTest(unittest.TestCase):
     def setUp(self):
         self.baseUrl = 'https://ipa.example.com'
         self.sourceUrl = 'https://gs.marcher.cs.txstate.edu'
@@ -37,6 +37,26 @@ class ipaClientTest(unittest.TestCase):
         }
 
         self.assertEquals(expectedParams, self.ipaClient.__getParams__('user_find', ['user1', 'user2']))
+
+    def testClient_constructParamsWithOptions(self):
+        expectedParams = {
+            'method': 'user_add',
+            'params': [
+                ['user1'],
+                {
+                    'version': self.apiVersion,
+                    'sn': 'test',
+                    'givenname': 'user'
+                }
+            ]
+        }
+
+        userOptions = {
+            'sn': 'test',
+            'givenname': 'user'
+        }
+
+        self.assertEquals(expectedParams, self.ipaClient.__getParams__('user_add', ['user1'], userOptions))
 
     def testClient_sendRequest(self):
         expectedHeaders = {
@@ -77,6 +97,36 @@ class ipaClientTest(unittest.TestCase):
             result = ipaClient.sendRequest('user_find', ['admin', 'register-marcher', 'smercado'])
 
             self.assertEquals(3, result['result']['count'])
+
+    def testClient_sendRequest_noJsonValue(self):
+        expectedIPAResponse = IPAResponse(
+            session='b99a25695f578c0bb30cafb0932035bf',
+            status_code=200,
+            expiration='Sun, 06 Sep 2015 05:12:56 GMT',
+            headers=None
+        )
+
+        mockResponse = MockResponse(
+            status_code=500,
+            headers=None
+        )
+
+        ipaAuth = IPAAuth(requests=None, baseUrl=self.baseUrl)
+        ipaAuth.authenticate = MagicMock(return_value=expectedIPAResponse)
+        requests.post = MagicMock(return_value=mockResponse)
+        mockResponse.json = MagicMock(side_effect=ValueError('No JSON object could be decoded'))
+
+        ipaClient = IPAClient(requests=requests,
+                              baseUrl=self.baseUrl,
+                              sourceUrl=self.sourceUrl,
+                              ipaAuth=ipaAuth)
+        try:
+            result = ipaClient.sendRequest('user_find', ['admin', 'register-marcher', 'smercado'])
+
+            # if the json object could not be parsed, let's return the response itself
+            self.assertEquals(mockResponse, result)
+        except ValueError:
+            self.fail('Should not throw an ValueError exception')
 
 if __name__ == '__main__':
     unittest.main()
