@@ -45,8 +45,8 @@ class IPAAuth(object):
         :return: IPAResponse
         """
         userData = {
-            'user': username,
-            'password': password
+            self.KEY_USER: username,
+            self.KEY_PASSWORD: password
         }
 
         response = self.requests.post(self.__getUrl__(),

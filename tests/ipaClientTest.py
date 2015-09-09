@@ -96,7 +96,7 @@ class IPAClientTest(unittest.TestCase):
 
             result = ipaClient.sendRequest('user_find', ['admin', 'register-marcher', 'smercado'])
 
-            self.assertEquals(3, result['result']['count'])
+            self.assertEquals(3, result.json()['result']['count'])
 
     def testClient_sendRequest_noJsonValue(self):
         expectedIPAResponse = IPAResponse(

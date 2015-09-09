@@ -107,8 +107,7 @@ class IPAAuthTest(unittest.TestCase):
         self.assertEquals(expectedIPAResponse.status_code, result.status_code)
         self.assertEquals(expectedIPAResponse.expiration, result.expiration)
 
-    def testAuth_sendAuthRequest_redirect(self):
-        # TODO will have to see what IPA will return if session is expired
+    def testAuth_sendAuthRequest_invalid(self):
         expectedIPAResponse = IPAResponse(
             status_code=999,
             headers=None,
