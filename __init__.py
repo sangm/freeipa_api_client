@@ -1,1 +1,1 @@
-from lib import IPAAuth, IPAClient
+from lib import IPAAuth, IPAClient, IPAPassword
