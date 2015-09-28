@@ -1,5 +1,5 @@
 from tests import MockResponse
-from mock import MagicMock
+from mock import MagicMock, ANY
 from lib import IPAAuth, IPAResponse
 import unittest
 import requests
@@ -124,6 +124,21 @@ class IPAAuthTest(unittest.TestCase):
 
         # The function returns the entire response so that it will be easier to debug
         self.assertEquals(requestResponseObject, result.failure)
+
+
+    def testAuth_getData_caseSensitivity(self):
+        # kinit is case sensitive, so we have to lowercase all the params given to data field
+        requests.post = MagicMock()
+
+        ipaClient = IPAAuth(requests=requests, baseUrl=self.baseUrl)
+
+        ipaClient.authenticate('testUser', 'passWord')
+
+        (arg, kwargs) = requests.post.call_args
+
+        self.assertEquals('password=password&user=testuser', kwargs['data'])
+
+
 
 if __name__ == '__main__':
     unittest.main()

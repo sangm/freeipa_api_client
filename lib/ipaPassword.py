@@ -1,5 +1,4 @@
 import urllib
-from lib import IPAResponse
 
 
 class IPAPassword(object):
