@@ -45,10 +45,10 @@ class IPAAuth(object):
         :return: IPAResponse
         """
 
-        # kinit is case sensitive, so we have to lowercase all the params given to data field
+        # kinit is case sensitive, so we have to lowercase username given to data field
         userData = {
             self.KEY_USER: username.lower(),
-            self.KEY_PASSWORD: password.lower()
+            self.KEY_PASSWORD: password
         }
 
         response = self.requests.post(self.__getUrl__(),

@@ -136,7 +136,7 @@ class IPAAuthTest(unittest.TestCase):
 
         (arg, kwargs) = requests.post.call_args
 
-        self.assertEquals('password=password&user=testuser', kwargs['data'])
+        self.assertEquals('password=passWord&user=testuser', kwargs['data'])
 
 
 
