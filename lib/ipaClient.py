@@ -8,11 +8,7 @@ class IPAClient(object):
 
     API_VERSION = '2.112'
 
-    # TODO These two fields are temporary. Will encrypt/read from some other source when everything else is finished
-    USERNAME = 'admin'
-    PASSWORD = 'Secret123'
-
-    def __init__(self, requests, baseUrl, sourceUrl, ipaAuth=None):
+    def __init__(self, requests, baseUrl, sourceUrl, ipaAuth=None, username=None, password=None):
         self.requests = requests
         self.baseUrl = baseUrl
         self.sourceUrl = sourceUrl
@@ -25,6 +21,9 @@ class IPAClient(object):
 
         self.sessionExpiration = None
         self.sessionID = None
+
+        self.USERNAME = username
+        self.PASSWORD = password
 
     def __getUrl__(self):
         """

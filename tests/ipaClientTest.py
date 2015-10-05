@@ -13,7 +13,11 @@ class IPAClientTest(unittest.TestCase):
         self.sourceUrl = 'https://gs.marcher.cs.txstate.edu'
         self.sessionID = 'b99a25695f578c0bb30cafb0932035bf'
         self.apiVersion = '2.112'
-        self.ipaClient = IPAClient(requests=None, baseUrl=self.baseUrl, sourceUrl=self.sourceUrl)
+        self.ipaClient = IPAClient(requests=None,
+                                   baseUrl=self.baseUrl,
+                                   sourceUrl=self.sourceUrl,
+                                   username='admin',
+                                   password='Secret123')
 
     def testClient_getUrl(self):
         self.assertEquals('https://ipa.example.com/ipa/session/json', self.ipaClient.__getUrl__())
