@@ -1,8 +1,16 @@
-# Library for interacting with FreeIPA
+# Library for interacting with FreeIPA JSON api
+
+## List of available classes (explain purpose/why)
++ ipaAuth
++ ipaPassword
++ ipaClient
+
+## List of environment variables
++ FREEIPA_API_LOG_PATH. Path to any error for the api. Defaults to /tmp/freeipa_api_logs
 
 ## To run tests
 + run `export PYTHONPATH='.'` to include current project into pythonpath 
-+ activate virtualenv and install packages by running `pip install -r requirements.txt`
++ Get all the dependencies in the following section
 
 ## Installing dependencies
 + [Install virtualenv](https://virtualenv.pypa.io/en/latest/installation.html)
@@ -13,7 +21,9 @@
 ## Things left to do
 + TODO Logging unexpected error to a log file in ipaAuth
 + TODO Compare time stamps in ipaClient
-+ TODO Store passwords in a secure manner
++ TODO Optional read values from environment variables
++ TODO Support configuration files
++ TODO make this available in pip
 
 ## Resources
 + https://vda.li/en/posts/2015/05/28/talking-to-freeipa-api-with-sessions/
