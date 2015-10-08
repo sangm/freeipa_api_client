@@ -1,6 +1,9 @@
 import json
 import requests
+import datetime
+import pytz
 from ipaAuth import IPAAuth
+from dateutil.parser import parse
 
 
 class IPAClient(object):
@@ -24,6 +27,8 @@ class IPAClient(object):
 
         self.USERNAME = username
         self.PASSWORD = password
+
+        self.timeZone = pytz.timezone('US/Pacific')
 
     def __getUrl__(self):
         """
@@ -67,9 +72,6 @@ class IPAClient(object):
             ]
         }
 
-    def getLocalTime(self, timeZone):
-        pass
-
     def sendRequest(self, method, params, options=None):
         """
         sends the request to json api using requests library
@@ -78,7 +80,9 @@ class IPAClient(object):
         :param options:
         :return:
         """
-        if self.sessionID is None or not self.isSessionExpired(self.sessionExpiration, None):
+        if self.sessionID is None \
+                or self.sessionExpiration is None \
+                or self.isSessionExpired(self.sessionExpiration, self.__getLocalTime__()):
             ipaResponse = self.ipaAuth.authenticate(self.USERNAME, self.PASSWORD)
             self.sessionID = ipaResponse.session
             self.sessionExpiration = ipaResponse.expiration
@@ -89,6 +93,32 @@ class IPAClient(object):
 
         return requests.post(url, data=json.dumps(params), headers=headers, verify=False)
 
-    def isSessionExpired(self, sessionExpiration, localTime):
-        # TODO Implement this, make sure both datetime objects are in the same timezone
-        return False
+    def __getLocalTime__(self):
+        """
+        handle everything utc timezone
+        """
+        return datetime.now(pytz.utc)
+
+    def isSessionExpired(self, sessionExpiration, localTimeDate):
+        """
+        :param sessionExpiration: date string from freeipa api
+        :param localTimeDate: local time of system
+        :return: whether or not session is expired
+        """
+        if not isinstance(localTimeDate, datetime.date):
+            return True
+
+        try:
+            sessionExpirationDate = parse(sessionExpiration)
+        except ValueError:
+            return True
+
+        # the api returns datetime with tzinfo. If not set, let's assume the data is invalid
+        if not sessionExpirationDate.tzinfo or not localTimeDate.tzinfo:
+            return True
+
+        # normalize both date time objects to utc
+        sessionExpirationDate = sessionExpirationDate.astimezone(pytz.utc)
+        localTimeDate = localTimeDate.astimezone(pytz.UTC)
+
+        return sessionExpirationDate < localTimeDate

@@ -1,6 +1,7 @@
 from mock import MagicMock
 from lib import IPAAuth, IPAResponse, IPAClient
 from tests import MockResponse
+from dateutil.parser import parse
 import unittest
 import requests
 import json
@@ -131,6 +132,41 @@ class IPAClientTest(unittest.TestCase):
             self.assertEquals(mockResponse, result)
         except ValueError:
             self.fail('Should not throw an ValueError exception')
+
+    def testClient_sessionExpiration_invalidType_returnsTrue(self):
+        expiration = 'Sun, 06 Sep 2015 05:12:56 GMT'
+        localTime = 'invalid'
+
+        sessionExpired = self.ipaClient.isSessionExpired(expiration, localTime)
+        self.assertTrue(sessionExpired)
+
+    def testClient_sessionExpiration_notExpired_returnsFalse(self):
+        expiration = 'Sun, 06 Sep 2015 05:12:56 GMT'
+        localTime = parse('Sun, 06 Sep 2015 04:12:56 GMT')
+
+        sessionExpired = self.ipaClient.isSessionExpired(expiration, localTime)
+        self.assertFalse(sessionExpired)
+
+    def testClient_sessionExpiration_expired_returnsTrue(self):
+        expiration = 'Sun, 06 Sep 2015 11:12:56 GMT'
+        localTime = parse('Sun, 06 Sep 2015 12:12:56 GMT')
+
+        sessionExpired = self.ipaClient.isSessionExpired(expiration, localTime)
+        self.assertTrue(sessionExpired)
+
+    def testClient_sessionExpiration_invalidFormat(self):
+        expiration = 'invalid'
+        localTime = parse('Sun, 06 Sep 2015 06:12:56 GMT')
+
+        sessionExpired = self.ipaClient.isSessionExpired(expiration, localTime)
+        self.assertTrue(sessionExpired)
+
+    def testClient_sessionExpiration_differentTimeZones(self):
+        expiration = 'Sun, 06 Sep 2015 01:12:56 CST'  # 6:12:56 UTC
+        localTime = parse('Sun, 06 Sep 2015 02:12:56 GMT')  # 2:12:56 UTC
+
+        sessionExpired = self.ipaClient.isSessionExpired(expiration, localTime)
+        self.assertFalse(sessionExpired)
 
 if __name__ == '__main__':
     unittest.main()
