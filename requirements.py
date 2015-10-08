@@ -1,0 +1,14 @@
+Flask==0.10.1
+funcsigs==0.4
+itsdangerous==0.24
+Jinja2==2.8
+MarkupSafe==0.23
+mock==1.3.0
+nose==1.3.7
+pbr==1.6.0
+python-dateutil==2.4.2
+pytz==2015.6
+requests==2.7.0
+six==1.9.0
+Werkzeug==0.10.4
+wheel==0.24.0
