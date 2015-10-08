@@ -1,9 +1,41 @@
 # Library for interacting with FreeIPA JSON api
 
 ## List of available classes (explain purpose/why)
-+ ipaAuth
-+ ipaPassword
-+ ipaClient
+
+#### IPAResponse
+small wrapper around the requests that is returned by json api.
+
++ headers: entire HTTP header returned by json api
++ status_code: HTTP Status Code
++ session: session cookie
++ failure: reason for failure extracted from HTTP headers
++ expiration: expiration date extracted from HTTP headers
+
+#### IPAAuth
+
+```python
+from freeipa_api_client import IPAAuth
+import requests
+
+a = IPAAuth(requests=requests, baseUrl='https://ipa.example.test')
+ipaResponse = a.authenticate('admin', 'Secret123')
+
+ipaResponse.status_code # 200
+ipaResponse.session  # session cookie from json api
+
+```
+
+#### IPAPassword
+This is needed because FreeIPA was never intended to be used this way.
+Any user that is registered will have to reset their password based on their first login attempt.
+FreeIPA provides another end point so that the user will not be prompted for another login
+
+#### IPAClient
+Used to actually interact with the api. Uses IPAAuth internally.
+
+
+## Show examples of ipa help commands
+
 
 ## List of environment variables
 + FREEIPA_API_LOG_PATH. Path to any error for the api. Defaults to /tmp/freeipa_api_logs
