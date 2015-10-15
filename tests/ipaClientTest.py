@@ -81,12 +81,19 @@ class IPAClientTest(unittest.TestCase):
             headers=expectedHeaders
         )
 
-        with open('%s/%s' % (os.path.dirname(__file__),'resources/user_find_result.json')) as f:
+        with open('%s/%s' % (os.path.dirname(__file__), 'resources/user_find_result.json')) as f:
             mockJson = json.load(f)
             mockResponse = MockResponse(
                 status_code=200,
                 headers=expectedHeaders,
                 jsonValue=mockJson
+            )
+
+            expectedResultIPAResponse = IPAResponse(
+                status_code=200,
+                headers=expectedHeaders,
+                raw_result=mockResponse,
+                parsed_json=mockJson['result']['result'],
             )
 
             ipaAuth = IPAAuth(requests=None, baseUrl=self.baseUrl)
@@ -99,9 +106,9 @@ class IPAClientTest(unittest.TestCase):
                                   sourceUrl=self.sourceUrl,
                                   ipaAuth=ipaAuth)
 
-            result = ipaClient.sendRequest('user_find', ['admin', 'register-marcher', 'smercado'])
-
-            self.assertEquals(3, result.json()['result']['count'])
+            response = ipaClient.sendRequest('user_find', ['admin', 'register-marcher', 'smercado'])
+            self.assertEquals(expectedResultIPAResponse.raw_result, response.raw_result)
+            self.assertEquals(expectedResultIPAResponse.parsed_json, response.parsed_json)
 
     def testClient_sendRequest_noJsonValue(self):
         expectedIPAResponse = IPAResponse(
@@ -125,13 +132,10 @@ class IPAClientTest(unittest.TestCase):
                               baseUrl=self.baseUrl,
                               sourceUrl=self.sourceUrl,
                               ipaAuth=ipaAuth)
-        try:
-            result = ipaClient.sendRequest('user_find', ['admin', 'register-marcher', 'smercado'])
 
-            # if the json object could not be parsed, let's return the response itself
-            self.assertEquals(mockResponse, result)
-        except ValueError:
-            self.fail('Should not throw an ValueError exception')
+        result = ipaClient.sendRequest('user_find', ['admin', 'register-marcher', 'smercado'])
+        self.assertEquals("No JSON object could be decoded", result.failure)
+
 
     def testClient_sessionExpiration_invalidType_returnsTrue(self):
         expiration = 'Sun, 06 Sep 2015 05:12:56 GMT'

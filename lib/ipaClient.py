@@ -3,6 +3,7 @@ import requests
 import datetime
 import pytz
 from ipaAuth import IPAAuth
+from ipaResponse import IPAResponse
 from dateutil.parser import parse
 
 
@@ -27,8 +28,6 @@ class IPAClient(object):
 
         self.USERNAME = username
         self.PASSWORD = password
-
-        self.timeZone = pytz.timezone('US/Pacific')
 
     def __getUrl__(self):
         """
@@ -91,7 +90,24 @@ class IPAClient(object):
         headers = self.__getHeader__(self.sessionID)
         params = self.__getParams__(method, params, options)
 
-        return requests.post(url, data=json.dumps(params), headers=headers, verify=False)
+        response = requests.post(url, data=json.dumps(params), headers=headers, verify=False)
+
+        ipaResponse = IPAResponse(
+            status_code=response.status_code,
+            headers=response.headers,
+            raw_result=response
+        )
+
+        try:
+            jsonResponse = response.json()
+        except Exception as e:
+            ipaResponse.failure = str(e)
+            return ipaResponse
+
+        parsedJson = jsonResponse.get('result', {}).get('result')
+        ipaResponse.parsed_json = parsedJson
+
+        return ipaResponse
 
     def __getLocalTime__(self):
         """
