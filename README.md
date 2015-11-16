@@ -10,6 +10,8 @@ small wrapper around the requests that is returned by json api.
 + session: session cookie
 + failure: reason for failure extracted from HTTP headers
 + expiration: expiration date extracted from HTTP headers
++ raw_result: actual result from HTTP request
++ parsed_json: 
 
 #### IPAAuth
 
@@ -30,12 +32,12 @@ This is needed because FreeIPA was never intended to be used this way.
 Any user that is registered will have to reset their password based on their first login attempt.
 FreeIPA provides another end point so that the user will not be prompted for another login
 
+[Link to Patch](https://www.redhat.com/archives/freeipa-devel/2012-June/msg00073.html)
+
 #### IPAClient
 Used to actually interact with the api. Uses IPAAuth internally.
 
-
 ## Show examples of ipa help commands
-
 
 ## List of environment variables
 + FREEIPA_API_LOG_PATH. Path to any error for the api. Defaults to /tmp/freeipa_api_logs
@@ -52,10 +54,10 @@ Used to actually interact with the api. Uses IPAAuth internally.
 
 ## Things left to do
 + TODO Logging unexpected error to a log file in ipaAuth
-+ TODO Compare time stamps in ipaClient
 + TODO Optional read values from environment variables
 + TODO Support configuration files
 + TODO make this available in pip
++ TODO make sure IPAClient documentation notes json_result is the PARSED result ['result']['result']
 
 ## Resources
 + https://vda.li/en/posts/2015/05/28/talking-to-freeipa-api-with-sessions/
